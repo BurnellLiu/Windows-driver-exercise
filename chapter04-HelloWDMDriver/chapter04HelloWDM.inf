@@ -1,0 +1,107 @@
+;
+; chapter01HelloWDM.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+
+;如果设备是一个标准类别，使用标准类的名称和GUID 否则创建一个自定义的类别名称，并自定义它的GUID  
+;自定义的类别在注册表中 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Class\ 有显示 
+Class=%DeviceClassName%
+ClassGuid={24B968AA-9C43-41D4-BFD5-0DED43B29F16}
+
+;INF文件的提供者 
+Provider=Tester
+
+DriverVer=
+
+
+;如果不是标准类别设备，这里的配置必须的  
+[ClassInstall32]                      
+Addreg=ClassAddReg  
+  
+  
+;对应的注册表是 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Class\  
+[ClassAddReg]    
+HKR,,,,%DeviceClassName%              
+HKR,,Icon,,"-5"  
+
+
+;驱动文件需要复制到的目的目录，12表示%windir%/system32/drivers
+[DestinationDirs]
+DriverFilesName=12
+
+
+;驱动文件名段
+[DriverFilesName]                                   
+chapter04-HelloWDM.sys 
+
+
+[SourceDisksNames.x86]
+1 = "HelloWDM Installation Disk"...                
+
+
+[SourceDisksNames.amd64]
+1 = "HelloWDM Installation Disk"...
+
+
+[SourceDisksFiles]
+;源驱动文件在标记为1的磁盘下
+DriverFilesName=1
+
+
+;这里是设置制作商相关的选项，注意这里VS默认生成的标准设备的配置 如：%ManufacturerName%=Standard,NT$ARCH$  
+;如果不是标准类别设备这里必须修改，要不然最后加载的时候会出现259错误
+;并且指定模型段  
+[Manufacturer]
+%ManufacturerName%=MyDeviceModel,ntx86,ntamd64               
+  
+ 
+;设备模型段 
+[MyDeviceModel]  
+;指定设备描述和设备ID，以及安装段
+%DeviceDesc%=DriverInstall.nt, PCI\VEN_8888&DEV_8888 
+
+
+[MyDeviceModel.ntx86]  
+;指定设备描述和设备ID，以及安装段
+%DeviceDesc%=DriverInstall.nt, PCI\VEN_8888&DEV_8888  
+
+
+[MyDeviceModel.ntamd64]  
+;指定设备描述和设备ID，以及安装段
+%DeviceDesc%=DriverInstall.nt, PCI\VEN_8888&DEV_8888  
+
+
+;这里需要注意WIN2000及其以上的系统这里有个.NT
+[DriverInstall.nt]   
+;指定需要拷贝的文件                    
+CopyFiles=DriverFilesName  
+;指定写注册表的段  
+AddReg=InstallAddReg 
+
+
+[InstallAddReg]    
+HKLM, "System\CurrentControlSet\Services\TestWDMSvc\Parameters", "BreakOnEntry", 0x00010001, 0
+
+
+;注册表中的服务名具体地址是 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services  
+[DriverInstall.nt.Services] 
+;TestWDMSvc为安装分服务名称   
+Addservice = TestWDMSvc, 0x00000002, SysAddService      
+  
+  
+;服务的具体选项  
+[SysAddService]    
+DisplayName = TestWDMSvc                            
+ServiceType = 1 ; SERVICE_KERNEL_DRIVER    
+StartType = 3 ; SERVICE_DEMAND_START    
+ErrorControl = 1 ; SERVICE_ERROR_NORMAL     
+ServiceBinary = %12%\chapter04-HelloWDM.sys   
+  
+     
+[Strings]
+ManufacturerName="MySoft"
+DeviceDesc="MyVEN_8888&DEV_8888Device"
+DeviceClassName="TestClass"
+
