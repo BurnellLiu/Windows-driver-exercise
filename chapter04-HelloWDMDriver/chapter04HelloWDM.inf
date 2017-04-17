@@ -1,38 +1,38 @@
-;
+ï»¿;
 ; chapter01HelloWDM.inf
 ;
 
 [Version]
 Signature="$WINDOWS NT$"
 
-;Èç¹ûÉè±¸ÊÇÒ»¸ö±ê×¼Àà±ğ£¬Ê¹ÓÃ±ê×¼ÀàµÄÃû³ÆºÍGUID ·ñÔò´´½¨Ò»¸ö×Ô¶¨ÒåµÄÀà±ğÃû³Æ£¬²¢×Ô¶¨ÒåËüµÄGUID  
-;×Ô¶¨ÒåµÄÀà±ğÔÚ×¢²á±íÖĞ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Class\ ÓĞÏÔÊ¾ 
+;å¦‚æœè®¾å¤‡æ˜¯ä¸€ä¸ªæ ‡å‡†ç±»åˆ«ï¼Œä½¿ç”¨æ ‡å‡†ç±»çš„åç§°å’ŒGUID å¦åˆ™åˆ›å»ºä¸€ä¸ªè‡ªå®šä¹‰çš„ç±»åˆ«åç§°ï¼Œå¹¶è‡ªå®šä¹‰å®ƒçš„GUID  
+;è‡ªå®šä¹‰çš„ç±»åˆ«åœ¨æ³¨å†Œè¡¨ä¸­ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Class\ æœ‰æ˜¾ç¤º 
 Class=%DeviceClassName%
 ClassGuid={24B968AA-9C43-41D4-BFD5-0DED43B29F16}
 
-;INFÎÄ¼şµÄÌá¹©Õß 
+;INFæ–‡ä»¶çš„æä¾›è€… 
 Provider=Tester
 
 DriverVer=
 
 
-;Èç¹û²»ÊÇ±ê×¼Àà±ğÉè±¸£¬ÕâÀïµÄÅäÖÃ±ØĞëµÄ  
+;å¦‚æœä¸æ˜¯æ ‡å‡†ç±»åˆ«è®¾å¤‡ï¼Œè¿™é‡Œçš„é…ç½®å¿…é¡»çš„  
 [ClassInstall32]                      
 Addreg=ClassAddReg  
   
   
-;¶ÔÓ¦µÄ×¢²á±íÊÇ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Class\  
+;å¯¹åº”çš„æ³¨å†Œè¡¨æ˜¯ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Class\  
 [ClassAddReg]    
 HKR,,,,%DeviceClassName%              
 HKR,,Icon,,"-5"  
 
 
-;Çı¶¯ÎÄ¼şĞèÒª¸´ÖÆµ½µÄÄ¿µÄÄ¿Â¼£¬12±íÊ¾%windir%/system32/drivers
+;é©±åŠ¨æ–‡ä»¶éœ€è¦å¤åˆ¶åˆ°çš„ç›®çš„ç›®å½•ï¼Œ12è¡¨ç¤º%windir%/system32/drivers
 [DestinationDirs]
 DriverFilesName=12
 
 
-;Çı¶¯ÎÄ¼şÃû¶Î
+;é©±åŠ¨æ–‡ä»¶åæ®µ
 [DriverFilesName]                                   
 chapter04-HelloWDM.sys 
 
@@ -46,38 +46,38 @@ chapter04-HelloWDM.sys
 
 
 [SourceDisksFiles]
-;Ô´Çı¶¯ÎÄ¼şÔÚ±ê¼ÇÎª1µÄ´ÅÅÌÏÂ
+;æºé©±åŠ¨æ–‡ä»¶åœ¨æ ‡è®°ä¸º1çš„ç£ç›˜ä¸‹
 DriverFilesName=1
 
 
-;ÕâÀïÊÇÉèÖÃÖÆ×÷ÉÌÏà¹ØµÄÑ¡Ïî£¬×¢ÒâÕâÀïVSÄ¬ÈÏÉú³ÉµÄ±ê×¼Éè±¸µÄÅäÖÃ Èç£º%ManufacturerName%=Standard,NT$ARCH$  
-;Èç¹û²»ÊÇ±ê×¼Àà±ğÉè±¸ÕâÀï±ØĞëĞŞ¸Ä£¬Òª²»È»×îºó¼ÓÔØµÄÊ±ºò»á³öÏÖ259´íÎó
-;²¢ÇÒÖ¸¶¨Ä£ĞÍ¶Î  
+;è¿™é‡Œæ˜¯è®¾ç½®åˆ¶ä½œå•†ç›¸å…³çš„é€‰é¡¹ï¼Œæ³¨æ„è¿™é‡ŒVSé»˜è®¤ç”Ÿæˆçš„æ ‡å‡†è®¾å¤‡çš„é…ç½® å¦‚ï¼š%ManufacturerName%=Standard,NT$ARCH$  
+;å¦‚æœä¸æ˜¯æ ‡å‡†ç±»åˆ«è®¾å¤‡è¿™é‡Œå¿…é¡»ä¿®æ”¹ï¼Œè¦ä¸ç„¶æœ€ååŠ è½½çš„æ—¶å€™ä¼šå‡ºç°259é”™è¯¯
+;å¹¶ä¸”æŒ‡å®šæ¨¡å‹æ®µ  
 [Manufacturer]
 %ManufacturerName%=MyDeviceModel,ntx86,ntamd64               
   
  
-;Éè±¸Ä£ĞÍ¶Î 
+;è®¾å¤‡æ¨¡å‹æ®µ 
 [MyDeviceModel]  
-;Ö¸¶¨Éè±¸ÃèÊöºÍÉè±¸ID£¬ÒÔ¼°°²×°¶Î
+;æŒ‡å®šè®¾å¤‡æè¿°å’Œè®¾å¤‡IDï¼Œä»¥åŠå®‰è£…æ®µ
 %DeviceDesc%=DriverInstall.nt, PCI\VEN_8888&DEV_8888 
 
 
 [MyDeviceModel.ntx86]  
-;Ö¸¶¨Éè±¸ÃèÊöºÍÉè±¸ID£¬ÒÔ¼°°²×°¶Î
+;æŒ‡å®šè®¾å¤‡æè¿°å’Œè®¾å¤‡IDï¼Œä»¥åŠå®‰è£…æ®µ
 %DeviceDesc%=DriverInstall.nt, PCI\VEN_8888&DEV_8888  
 
 
 [MyDeviceModel.ntamd64]  
-;Ö¸¶¨Éè±¸ÃèÊöºÍÉè±¸ID£¬ÒÔ¼°°²×°¶Î
+;æŒ‡å®šè®¾å¤‡æè¿°å’Œè®¾å¤‡IDï¼Œä»¥åŠå®‰è£…æ®µ
 %DeviceDesc%=DriverInstall.nt, PCI\VEN_8888&DEV_8888  
 
 
-;ÕâÀïĞèÒª×¢ÒâWIN2000¼°ÆäÒÔÉÏµÄÏµÍ³ÕâÀïÓĞ¸ö.NT
+;è¿™é‡Œéœ€è¦æ³¨æ„WIN2000åŠå…¶ä»¥ä¸Šçš„ç³»ç»Ÿè¿™é‡Œæœ‰ä¸ª.NT
 [DriverInstall.nt]   
-;Ö¸¶¨ĞèÒª¿½±´µÄÎÄ¼ş                    
+;æŒ‡å®šéœ€è¦æ‹·è´çš„æ–‡ä»¶                    
 CopyFiles=DriverFilesName  
-;Ö¸¶¨Ğ´×¢²á±íµÄ¶Î  
+;æŒ‡å®šå†™æ³¨å†Œè¡¨çš„æ®µ  
 AddReg=InstallAddReg 
 
 
@@ -85,13 +85,13 @@ AddReg=InstallAddReg
 HKLM, "System\CurrentControlSet\Services\TestWDMSvc\Parameters", "BreakOnEntry", 0x00010001, 0
 
 
-;×¢²á±íÖĞµÄ·şÎñÃû¾ßÌåµØÖ·ÊÇ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services  
+;æ³¨å†Œè¡¨ä¸­çš„æœåŠ¡åå…·ä½“åœ°å€æ˜¯ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services  
 [DriverInstall.nt.Services] 
-;TestWDMSvcÎª°²×°·Ö·şÎñÃû³Æ   
+;TestWDMSvcä¸ºå®‰è£…åˆ†æœåŠ¡åç§°   
 Addservice = TestWDMSvc, 0x00000002, SysAddService      
   
   
-;·şÎñµÄ¾ßÌåÑ¡Ïî  
+;æœåŠ¡çš„å…·ä½“é€‰é¡¹  
 [SysAddService]    
 DisplayName = TestWDMSvc                            
 ServiceType = 1 ; SERVICE_KERNEL_DRIVER    

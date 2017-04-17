@@ -1,4 +1,4 @@
-
+Ôªø
 
 #include <cstdio>
 
@@ -6,7 +6,7 @@
 
 int main()
 {
-    // ¥•∑¢IRP_MJ_CREATE
+    // Ëß¶ÂèëIRP_MJ_CREATE
     HANDLE hDevice = CreateFileA(
         "\\\\.\\HelloNTDriver1", 
         GENERIC_READ | GENERIC_WRITE, 
@@ -24,7 +24,7 @@ int main()
     if (INVALID_HANDLE_VALUE != hDevice &&
         NULL != hDevice)
     {
-        // ¥•∑¢IRP_MJ_CLEANUP, IRP_MJ_CLOSE
+        // Ëß¶ÂèëIRP_MJ_CLEANUP, IRP_MJ_CLOSE
         CloseHandle(hDevice);
         hDevice = NULL;
     }

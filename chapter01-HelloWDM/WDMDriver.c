@@ -1,39 +1,39 @@
-
+ï»¿
 #include <wdm.h>
 
 
-/// @brief Éè±¸À©Õ¹½á¹¹
+/// @brief è®¾å¤‡æ‰©å±•ç»“æ„
 typedef struct _DEVICE_EXTENSION
 {
-    PDEVICE_OBJECT PDeviceObject; ///< Éè±¸¶ÔÏó
-    PDEVICE_OBJECT PNextStackDevice; ///< ÏÂ²ãÉè±¸¶ÔÏóÖ¸Õë
-    UNICODE_STRING DeviceName; ///< Éè±¸Ãû³Æ
-    UNICODE_STRING SymLinkName; ///< ·ûºÅÁ´½ÓÃû
+    PDEVICE_OBJECT PDeviceObject; ///< è®¾å¤‡å¯¹è±¡
+    PDEVICE_OBJECT PNextStackDevice; ///< ä¸‹å±‚è®¾å¤‡å¯¹è±¡æŒ‡é’ˆ
+    UNICODE_STRING DeviceName; ///< è®¾å¤‡åç§°
+    UNICODE_STRING SymLinkName; ///< ç¬¦å·é“¾æ¥å
 
 } DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
 
-/// @brief ¶ÔPNP IRP½øĞĞÄ¬ÈÏ´¦Àí
-/// @param[in] pDeviceExt Éè±¸¶ÔÏóÀ©Õ¹
-/// @param[in] pIrp I/OÇëÇó°ü
-/// @return ×´Ì¬
+/// @brief å¯¹PNP IRPè¿›è¡Œé»˜è®¤å¤„ç†
+/// @param[in] pDeviceExt è®¾å¤‡å¯¹è±¡æ‰©å±•
+/// @param[in] pIrp I/Oè¯·æ±‚åŒ…
+/// @return çŠ¶æ€
 NTSTATUS PnpDefaultHandler(PDEVICE_EXTENSION pDeviceExt, PIRP pIrp)
 {
     KdPrint(("Enter DefaultPnpHandler\n"));
 
-    // ÂÔ¹ıµ±Ç°¶ÑÕ»
+    // ç•¥è¿‡å½“å‰å †æ ˆ
     IoSkipCurrentIrpStackLocation(pIrp);
 
     KdPrint(("Leave DefaultPnpHandler\n"));
 
-    // ÓÃÏÂ²ã¶ÑÕ»µÄÇı¶¯Éè±¸´¦Àí´ËIRP
+    // ç”¨ä¸‹å±‚å †æ ˆçš„é©±åŠ¨è®¾å¤‡å¤„ç†æ­¤IRP
     return IoCallDriver(pDeviceExt->PNextStackDevice, pIrp);
 }
   
-/// @brief PNPÒÆ³ıÉè±¸´¦Àíº¯Êı
-/// @param[in] pDeviceExt Éè±¸À©Õ¹¶ÔÏó
-/// @param[in] pIrp ÇëÇó°ü
-/// @return ×´Ì¬
+/// @brief PNPç§»é™¤è®¾å¤‡å¤„ç†å‡½æ•°
+/// @param[in] pDeviceExt è®¾å¤‡æ‰©å±•å¯¹è±¡
+/// @param[in] pIrp è¯·æ±‚åŒ…
+/// @return çŠ¶æ€
 NTSTATUS PnpRemoveDevice(PDEVICE_EXTENSION pDeviceExt, PIRP pIrp)
 {
     KdPrint(("Enter HandleRemoveDevice\n"));
@@ -41,14 +41,14 @@ NTSTATUS PnpRemoveDevice(PDEVICE_EXTENSION pDeviceExt, PIRP pIrp)
     pIrp->IoStatus.Status = STATUS_SUCCESS;
     NTSTATUS status = PnpDefaultHandler(pDeviceExt, pIrp);
 
-    // É¾³ı·ûºÅÁ´½Ó
+    // åˆ é™¤ç¬¦å·é“¾æ¥
     IoDeleteSymbolicLink(&pDeviceExt->SymLinkName);
 
-    //µ÷ÓÃIoDetachDevice()°ÑÉè±¸¶ÔÏó´ÓÉè±¸Õ»ÖĞÍÑ¿ª£º  
+    //è°ƒç”¨IoDetachDevice()æŠŠè®¾å¤‡å¯¹è±¡ä»è®¾å¤‡æ ˆä¸­è„±å¼€ï¼š  
     if (pDeviceExt->PNextStackDevice != NULL)
         IoDetachDevice(pDeviceExt->PNextStackDevice);
 
-    //É¾³ıÉè±¸¶ÔÏó£º  
+    //åˆ é™¤è®¾å¤‡å¯¹è±¡ï¼š  
     IoDeleteDevice(pDeviceExt->PDeviceObject);
 
     KdPrint(("Leave HandleRemoveDevice\n"));
@@ -56,26 +56,26 @@ NTSTATUS PnpRemoveDevice(PDEVICE_EXTENSION pDeviceExt, PIRP pIrp)
     return status;
 }
 
-/// @brief Ìí¼ÓĞÂÉè±¸
-/// @param[in] pDriverObject ´ÓI/O¹ÜÀíÆ÷´«½øÀ´µÄÇı¶¯¶ÔÏó
-/// @param[in] pPhysicalDeviceObject ´ÓI/O¹ÜÀíÆ÷´«½øÀ´µÄÎïÀíÉè±¸¶ÔÏó
-/// @return Ìí¼ÓĞÂÉè±¸×´Ì¬
+/// @brief æ·»åŠ æ–°è®¾å¤‡
+/// @param[in] pDriverObject ä»I/Oç®¡ç†å™¨ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+/// @param[in] pPhysicalDeviceObject ä»I/Oç®¡ç†å™¨ä¼ è¿›æ¥çš„ç‰©ç†è®¾å¤‡å¯¹è±¡
+/// @return æ·»åŠ æ–°è®¾å¤‡çŠ¶æ€
 NTSTATUS HelloWDMAddDevice(IN PDRIVER_OBJECT pDriverObject, IN PDEVICE_OBJECT pPhysicalDeviceObject)
 {
     KdPrint(("Enter HelloWDMAddDevice\n"));
 
     NTSTATUS status = STATUS_SUCCESS;
 
-    UNICODE_STRING devName = { 0 }; // Éè±¸Ãû³Æ
-    UNICODE_STRING symName = { 0 }; // Á´½Ó·ûºÅÃû
-    PDEVICE_OBJECT pDeviceObject = NULL; // ´´½¨µÄÉè±¸¶ÔÏó
-    PDEVICE_EXTENSION pDeviceExt = NULL; // Éè±¸À©Õ¹¶ÔÏó
+    UNICODE_STRING devName = { 0 }; // è®¾å¤‡åç§°
+    UNICODE_STRING symName = { 0 }; // é“¾æ¥ç¬¦å·å
+    PDEVICE_OBJECT pDeviceObject = NULL; // åˆ›å»ºçš„è®¾å¤‡å¯¹è±¡
+    PDEVICE_EXTENSION pDeviceExt = NULL; // è®¾å¤‡æ‰©å±•å¯¹è±¡
 
-    // ³õÊ¼»¯×Ö·û´®
+    // åˆå§‹åŒ–å­—ç¬¦ä¸²
     RtlInitUnicodeString(&devName, L"\\Device\\HelloWDMDevice");
     RtlInitUnicodeString(&symName, L"\\??\\HelloWDMDevice");
 
-    // ´´½¨Éè±¸
+    // åˆ›å»ºè®¾å¤‡
     status = IoCreateDevice(
         pDriverObject,
         sizeof(DEVICE_EXTENSION),
@@ -96,7 +96,7 @@ NTSTATUS HelloWDMAddDevice(IN PDRIVER_OBJECT pDriverObject, IN PDEVICE_OBJECT pP
     pDeviceExt->DeviceName = devName;
     pDeviceExt->SymLinkName = symName;
 
-    // ½²Éè±¸¶ÔÏó¹Ò½ÓÔÚÉè±¸¶ÑÕ»ÉÏ
+    // è®²è®¾å¤‡å¯¹è±¡æŒ‚æ¥åœ¨è®¾å¤‡å †æ ˆä¸Š
     pDeviceExt->PNextStackDevice = IoAttachDeviceToDeviceStack(pDeviceObject, pPhysicalDeviceObject);
 
     status = IoCreateSymbolicLink(&symName, &devName);
@@ -119,10 +119,10 @@ NTSTATUS HelloWDMAddDevice(IN PDRIVER_OBJECT pDriverObject, IN PDEVICE_OBJECT pP
     return status;
 }
 
-/// @brief ¶Ô¼´²å¼´ÓÃIPR½øĞĞ´¦Àí
-/// @param[in] pDeviceObject ¹¦ÄÜÉè±¸¶ÔÏó
-/// @param[in] pIrp ÇëÇó°ü
-/// @return ×´Ì¬
+/// @brief å¯¹å³æ’å³ç”¨IPRè¿›è¡Œå¤„ç†
+/// @param[in] pDeviceObject åŠŸèƒ½è®¾å¤‡å¯¹è±¡
+/// @param[in] pIrp è¯·æ±‚åŒ…
+/// @return çŠ¶æ€
 NTSTATUS HelloWDMPnp(IN PDEVICE_OBJECT pDeviceObject, IN PIRP pIrp)
 {
     KdPrint(("Enter HelloWDMPnp\n"));
@@ -150,7 +150,7 @@ NTSTATUS HelloWDMPnp(IN PDEVICE_OBJECT pDeviceObject, IN PIRP pIrp)
 }
 
 
-/// @brief ¶ÔÄ¬ÈÏIPR½øĞĞ´¦Àí
+/// @brief å¯¹é»˜è®¤IPRè¿›è¡Œå¤„ç†
 NTSTATUS HelloWDMDispatchRoutine(IN PDEVICE_OBJECT pDeviceObject, IN PIRP pIrp)
 {
     UNREFERENCED_PARAMETER(pDeviceObject);
@@ -168,7 +168,7 @@ NTSTATUS HelloWDMDispatchRoutine(IN PDEVICE_OBJECT pDeviceObject, IN PIRP pIrp)
     return STATUS_SUCCESS;
 }
 
-/// @brief Çı¶¯³ÌĞòĞ¶ÔØ²Ù×÷
+/// @brief é©±åŠ¨ç¨‹åºå¸è½½æ“ä½œ
 void HelloWDMUnload(IN PDRIVER_OBJECT pDriverObject)
 {
     UNREFERENCED_PARAMETER(pDriverObject);
@@ -178,10 +178,10 @@ void HelloWDMUnload(IN PDRIVER_OBJECT pDriverObject)
 }
 
 
-/// @brief ³õÊ¼»¯Çı¶¯³ÌĞò
-/// @param[in] pDriverObject Çı¶¯¶ÔÏó
-/// @param[in] pRegPath Çı¶¯³ÌĞòÔÚ×¢²á±íÖĞµÄÂ·¾¶
-/// @return ³õÊ¼»¯Çı¶¯×´Ì¬
+/// @brief åˆå§‹åŒ–é©±åŠ¨ç¨‹åº
+/// @param[in] pDriverObject é©±åŠ¨å¯¹è±¡
+/// @param[in] pRegPath é©±åŠ¨ç¨‹åºåœ¨æ³¨å†Œè¡¨ä¸­çš„è·¯å¾„
+/// @return åˆå§‹åŒ–é©±åŠ¨çŠ¶æ€
 NTSTATUS DriverEntry(IN PDRIVER_OBJECT pDriverObject, IN PUNICODE_STRING pRegPath)
 {
     UNREFERENCED_PARAMETER(pRegPath);

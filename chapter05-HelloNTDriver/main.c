@@ -1,22 +1,22 @@
-
+ï»¿
 
 #include <ntddk.h>
 
-/// @brief PsGetProcessImageFileName¿ÉÒÔ»ñµÃ½ø³ÌÃû£¬Î¢ÈíÃ»ÓĞ¹éµµ£¬µ«µ¼³öÁË£¬ÉùÃ÷Ò»ÏÂ¾Í¿ÉÒÔÊ¹ÓÃ
-/// @param[in] pEProcess ½ø³ÌÖ¸Õë
-/// @return ½ø³ÌÃû
+/// @brief PsGetProcessImageFileNameå¯ä»¥è·å¾—è¿›ç¨‹åï¼Œå¾®è½¯æ²¡æœ‰å½’æ¡£ï¼Œä½†å¯¼å‡ºäº†ï¼Œå£°æ˜ä¸€ä¸‹å°±å¯ä»¥ä½¿ç”¨
+/// @param[in] pEProcess è¿›ç¨‹æŒ‡é’ˆ
+/// @return è¿›ç¨‹å
 NTKERNELAPI UCHAR* PsGetProcessImageFileName(__in PEPROCESS pEProcess);
 
-/// @brief Éè±¸À©Õ¹½á¹¹
+/// @brief è®¾å¤‡æ‰©å±•ç»“æ„
 typedef struct _DEVICE_EXTENSION
 {
     PDEVICE_OBJECT PDeviceObject;
-    UNICODE_STRING DeviceName; ///< Éè±¸Ãû³Æ
-    UNICODE_STRING SymLinkName; ///< ·ûºÅÁ´½ÓÃû
+    UNICODE_STRING DeviceName; ///< è®¾å¤‡åç§°
+    UNICODE_STRING SymLinkName; ///< ç¬¦å·é“¾æ¥å
 
 } DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
-/// @brief ÏÔÊ¾µ±Ç°½ø³ÌÃû³Æ
+/// @brief æ˜¾ç¤ºå½“å‰è¿›ç¨‹åç§°
 void DisplayProcessName()
 {
     PEPROCESS pEProcess = PsGetCurrentProcess();
@@ -25,7 +25,7 @@ void DisplayProcessName()
     KdPrint(("Process Name: %s\n", processName));
 }
 
-/// @brief ¶ÔIRP½øĞĞ´¦Àí
+/// @brief å¯¹IRPè¿›è¡Œå¤„ç†
 /// @param[in] pDriverObject
 /// @param[in] pIrp
 /// @return
@@ -46,9 +46,9 @@ NTSTATUS HelloNTDriverDispatchRoutine(IN PDEVICE_OBJECT pDevObject, IN PIRP pIrp
     return status;
 }
 
-/// @brief ´´½¨Éè±¸¶ÔÏó
-/// @param[in] pDriverObject Çı¶¯¶ÔÏó
-/// @return ×´Ì¬Öµ
+/// @brief åˆ›å»ºè®¾å¤‡å¯¹è±¡
+/// @param[in] pDriverObject é©±åŠ¨å¯¹è±¡
+/// @return çŠ¶æ€å€¼
 NTSTATUS CreateDevice(IN PDRIVER_OBJECT pDriverObject)
 {
     UNICODE_STRING devName1;
@@ -61,7 +61,7 @@ NTSTATUS CreateDevice(IN PDRIVER_OBJECT pDriverObject)
     PDEVICE_EXTENSION pDevExt2 = NULL;
     NTSTATUS status;
 
-    // ´´½¨Éè±¸¶ÔÏó1
+    // åˆ›å»ºè®¾å¤‡å¯¹è±¡1
     RtlInitUnicodeString(&devName1, L"\\Device\\HelloNTDriverDevice1");
     status = IoCreateDevice(
         pDriverObject,
@@ -91,7 +91,7 @@ NTSTATUS CreateDevice(IN PDRIVER_OBJECT pDriverObject)
     }
 
     
-    // ´´½¨Éè±¸¶ÔÏó2
+    // åˆ›å»ºè®¾å¤‡å¯¹è±¡2
     RtlInitUnicodeString(&devName2, L"\\Device\\HelloNTDriverDevice2");
     status = IoCreateDevice(
         pDriverObject,
@@ -125,8 +125,8 @@ NTSTATUS CreateDevice(IN PDRIVER_OBJECT pDriverObject)
 
 }
 
-// @brief Çı¶¯³ÌĞòĞ¶ÔØ²Ù×÷
-/// @param[in] pDriverObject Çı¶¯¶ÔÏó
+// @brief é©±åŠ¨ç¨‹åºå¸è½½æ“ä½œ
+/// @param[in] pDriverObject é©±åŠ¨å¯¹è±¡
 void HelloNTDriverUnload(IN PDRIVER_OBJECT pDriverObject)
 {
     PDEVICE_OBJECT pNextObj = NULL;
@@ -138,22 +138,22 @@ void HelloNTDriverUnload(IN PDRIVER_OBJECT pDriverObject)
     {
         PDEVICE_EXTENSION pDevExt = (PDEVICE_EXTENSION)pNextObj->DeviceExtension;
 
-        // É¾³ı·ûºÅÁ´½Ó
+        // åˆ é™¤ç¬¦å·é“¾æ¥
         UNICODE_STRING linkName = pDevExt->SymLinkName;
         IoDeleteSymbolicLink(&linkName);
         pNextObj = pNextObj->NextDevice;
 
-        // É¾³ıÉè±¸¶ÔÏó
+        // åˆ é™¤è®¾å¤‡å¯¹è±¡
         IoDeleteDevice(pDevExt->PDeviceObject);
     }
 
     KdPrint(("Leave HelloNTDriverUnload\n"));
 }
 
-/// @brief Çı¶¯³ÌĞòÈë¿Úº¯Êı
-/// @param[in] pDriverObject ´ÓI/O¹ÜÀíÆ÷ÖĞ´«½øÀ´µÄÇı¶¯¶ÔÏó
-/// @param[in] pRegPath Çı¶¯³ÌĞòÔÚ×¢²á±íÖĞµÄÂ·¾¶
-/// @return ³õÊ¼»¯Çı¶¯×´Ì¬
+/// @brief é©±åŠ¨ç¨‹åºå…¥å£å‡½æ•°
+/// @param[in] pDriverObject ä»I/Oç®¡ç†å™¨ä¸­ä¼ è¿›æ¥çš„é©±åŠ¨å¯¹è±¡
+/// @param[in] pRegPath é©±åŠ¨ç¨‹åºåœ¨æ³¨å†Œè¡¨ä¸­çš„è·¯å¾„
+/// @return åˆå§‹åŒ–é©±åŠ¨çŠ¶æ€
 NTSTATUS DriverEntry(IN PDRIVER_OBJECT pDriverObject, IN PUNICODE_STRING pRegPath)
 {
     NTSTATUS status = STATUS_SUCCESS;
@@ -168,15 +168,15 @@ NTSTATUS DriverEntry(IN PDRIVER_OBJECT pDriverObject, IN PUNICODE_STRING pRegPat
 
     UNREFERENCED_PARAMETER(pRegPath);
 
-    // ×¢²áÇı¶¯µ÷ÓÃº¯ÊıÈë¿Ú
-    // ÕâĞ©º¯Êı²»ÊÇÓÉÇı¶¯³ÌĞò±¾Éí¸ºÔğµ÷ÓÃ, ¶øÊÇÓÉ²Ù×÷ÏµÍ³¸ºÔğµ÷ÓÃ
+    // æ³¨å†Œé©±åŠ¨è°ƒç”¨å‡½æ•°å…¥å£
+    // è¿™äº›å‡½æ•°ä¸æ˜¯ç”±é©±åŠ¨ç¨‹åºæœ¬èº«è´Ÿè´£è°ƒç”¨, è€Œæ˜¯ç”±æ“ä½œç³»ç»Ÿè´Ÿè´£è°ƒç”¨
     pDriverObject->DriverUnload = HelloNTDriverUnload;
     pDriverObject->MajorFunction[IRP_MJ_CREATE] = HelloNTDriverDispatchRoutine;
     pDriverObject->MajorFunction[IRP_MJ_CLOSE] = HelloNTDriverDispatchRoutine;
     pDriverObject->MajorFunction[IRP_MJ_WRITE] = HelloNTDriverDispatchRoutine;
     pDriverObject->MajorFunction[IRP_MJ_READ] = HelloNTDriverDispatchRoutine;
 
-    // ´´½¨Çı¶¯Éè±¸¶ÔÏó
+    // åˆ›å»ºé©±åŠ¨è®¾å¤‡å¯¹è±¡
     status = CreateDevice(pDriverObject);
 
     KdPrint(("Leave DriverEntry\n"));

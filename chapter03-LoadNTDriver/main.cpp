@@ -1,4 +1,4 @@
-
+ï»¿
 
 #include <cstdio>
 #include <cstdlib>
@@ -6,12 +6,12 @@
 
 #include <Windows.h>
 
-/// @brief ¼ÓÔØNTÇı¶¯³ÌĞò
-/// ĞèÒª¹ÜÀíÔ±È¨ÏŞ, ·ñÔò»á¼ÓÔØÊ§°Ü
-/// 32Î»ÏµÍ³ĞèÒª¼ÓÔØ32Î»Çı¶¯, 64Î»ÏµÍ³ĞèÒª¼ÓÔØ64Î»Çı¶¯
-/// @param[in] pDriverName Çı¶¯Ãû³Æ
-/// @param[in] pDriverPath Çı¶¯ÎÄ¼şÂ·¾¶
-/// @return ³É¹¦·µ»Øtrue, Ê§°Ü·µ»Øfalse
+/// @brief åŠ è½½NTé©±åŠ¨ç¨‹åº
+/// éœ€è¦ç®¡ç†å‘˜æƒé™, å¦åˆ™ä¼šåŠ è½½å¤±è´¥
+/// 32ä½ç³»ç»Ÿéœ€è¦åŠ è½½32ä½é©±åŠ¨, 64ä½ç³»ç»Ÿéœ€è¦åŠ è½½64ä½é©±åŠ¨
+/// @param[in] pDriverName é©±åŠ¨åç§°
+/// @param[in] pDriverPath é©±åŠ¨æ–‡ä»¶è·¯å¾„
+/// @return æˆåŠŸè¿”å›true, å¤±è´¥è¿”å›false
 bool LoadNTDriver(IN const char* pDriverName, IN const char* pDriverPath)
 {
     bool bRet = false;
@@ -20,10 +20,10 @@ bool LoadNTDriver(IN const char* pDriverName, IN const char* pDriverPath)
     DWORD bufferSize = 256;
     DWORD fullPathSize = 0;
 
-    SC_HANDLE hServiceManager = NULL; // ·şÎñ¿ØÖÆ¹ÜÀíÆ÷¾ä±ú
-    SC_HANDLE hDriverService = NULL; // Çı¶¯·şÎñ¾ä±ú
+    SC_HANDLE hServiceManager = NULL; // æœåŠ¡æ§åˆ¶ç®¡ç†å™¨å¥æŸ„
+    SC_HANDLE hDriverService = NULL; // é©±åŠ¨æœåŠ¡å¥æŸ„
 
-    // »ñÈ¡Çı¶¯³ÌĞòÎÄ¼şÈ«Â·¾¶
+    // è·å–é©±åŠ¨ç¨‹åºæ–‡ä»¶å…¨è·¯å¾„
     pFullPathBuffer = new char[bufferSize];
     ZeroMemory(pFullPathBuffer, bufferSize);
     fullPathSize = GetFullPathNameA(pDriverPath, bufferSize, pFullPathBuffer, NULL);
@@ -36,8 +36,8 @@ bool LoadNTDriver(IN const char* pDriverName, IN const char* pDriverPath)
         GetFullPathNameA(pDriverPath, bufferSize, pFullPathBuffer, NULL);
     }
 
-    // ´ò¿ªSCM¹ÜÀíÆ÷
-    // ĞèÒª¹ÜÀíÔ±È¨ÏŞ
+    // æ‰“å¼€SCMç®¡ç†å™¨
+    // éœ€è¦ç®¡ç†å‘˜æƒé™
     hServiceManager = OpenSCManagerA(NULL, NULL, SC_MANAGER_ALL_ACCESS);
     if (NULL == hServiceManager)
     {
@@ -46,7 +46,7 @@ bool LoadNTDriver(IN const char* pDriverName, IN const char* pDriverPath)
         goto SAFE_EXIT;
     }
 
-    // ´´½¨·şÎñ
+    // åˆ›å»ºæœåŠ¡
     hDriverService = CreateServiceA(
         hServiceManager,
         pDriverName,
@@ -76,7 +76,7 @@ bool LoadNTDriver(IN const char* pDriverName, IN const char* pDriverPath)
             printf("Service Is Exist\n");
         }
 
-        // Èç¹û·şÎñÒÑ¾­´æÔÚÔò´ò¿ª·şÎñ
+        // å¦‚æœæœåŠ¡å·²ç»å­˜åœ¨åˆ™æ‰“å¼€æœåŠ¡
         hDriverService = OpenServiceA(hServiceManager, pDriverName, SERVICE_ALL_ACCESS);
         if (NULL == hDriverService)
         {
@@ -86,7 +86,7 @@ bool LoadNTDriver(IN const char* pDriverName, IN const char* pDriverPath)
         }
     }
 
-    // Æô¶¯·şÎñ
+    // å¯åŠ¨æœåŠ¡
     dwRet = StartServiceA(hDriverService, NULL, NULL);
     if (FALSE == dwRet)
     {
@@ -125,21 +125,21 @@ SAFE_EXIT:
     return bRet;
 };
 
-/// @brief Ğ¶ÔØNTÇı¶¯³ÌĞò
-/// ĞèÒª¹ÜÀíÔ±È¨ÏŞ, ·ñÔò»áĞ¶ÔØÊ§°Ü
-/// @param[in] pDriverName Çı¶¯³ÌĞòÃû³Æ
-/// @return ³É¹¦·µ»Øtrue, Ê§°Ü·µ»Øfalse
+/// @brief å¸è½½NTé©±åŠ¨ç¨‹åº
+/// éœ€è¦ç®¡ç†å‘˜æƒé™, å¦åˆ™ä¼šå¸è½½å¤±è´¥
+/// @param[in] pDriverName é©±åŠ¨ç¨‹åºåç§°
+/// @return æˆåŠŸè¿”å›true, å¤±è´¥è¿”å›false
 bool UnLoadNTDriver(const char* pDriverName)
 {
     bool bRet = true;
     DWORD dwRet = FALSE;
 
-    SC_HANDLE hServiceManager = NULL; // ·şÎñ¿ØÖÆ¹ÜÀíÆ÷¾ä±ú
-    SC_HANDLE hDriverService = NULL; // Çı¶¯·şÎñ¾ä±ú
+    SC_HANDLE hServiceManager = NULL; // æœåŠ¡æ§åˆ¶ç®¡ç†å™¨å¥æŸ„
+    SC_HANDLE hDriverService = NULL; // é©±åŠ¨æœåŠ¡å¥æŸ„
     SERVICE_STATUS serviceStatus;
 
-    // ´ò¿ªSCM¹ÜÀíÆ÷
-    // ĞèÒª¹ÜÀíÔ±È¨ÏŞ
+    // æ‰“å¼€SCMç®¡ç†å™¨
+    // éœ€è¦ç®¡ç†å‘˜æƒé™
     hServiceManager = OpenSCManagerA(NULL, NULL, SC_MANAGER_ALL_ACCESS);
     if (NULL == hServiceManager)
     {
@@ -148,7 +148,7 @@ bool UnLoadNTDriver(const char* pDriverName)
         goto SAFE_EXIT;
     }
 
-    // ´ò¿ª·şÎñ
+    // æ‰“å¼€æœåŠ¡
     hDriverService = OpenServiceA(hServiceManager, pDriverName, SERVICE_ALL_ACCESS);
     if (NULL == hDriverService)
     {
@@ -157,14 +157,14 @@ bool UnLoadNTDriver(const char* pDriverName)
         goto SAFE_EXIT;
     }
 
-    // Í£Ö¹·şÎñ
+    // åœæ­¢æœåŠ¡
     dwRet = ControlService(hDriverService, SERVICE_CONTROL_STOP, &serviceStatus);
     if (dwRet == FALSE)
     {
         printf("Control Service Stop Fail: %d\n", GetLastError());
     }
 
-    // É¾³ı·şÎñ
+    // åˆ é™¤æœåŠ¡
     dwRet = DeleteService(hDriverService);
     if (dwRet == FALSE)
     {
@@ -188,7 +188,7 @@ SAFE_EXIT:
     return bRet;
 }
 
-/// @brief ²âÊÔÇı¶¯³ÌĞò
+/// @brief æµ‹è¯•é©±åŠ¨ç¨‹åº
 void TestNTDriver()
 {
     HANDLE hDevice = CreateFileA(
